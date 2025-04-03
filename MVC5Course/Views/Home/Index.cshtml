@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Modbus 即時監控";
+}
+
+<h2>Modbus 即時監控</h2>
+<table border="1">
+    <tr>
+        <th>地址</th>
+        <th>數值</th>
+    </tr>
+    <tbody id="modbusData">
+    </tbody>
+</table>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script src="~/Scripts/jquery.signalR-2.4.3.min.js"></script>
+<script src="~/signalr/hubs"></script>
+
+<script>
+        var hub = $.connection.modbusHub;
+
+    hub.client.updateModbusData = function (address, value) {
+            console.log("📡 接收到數據: ", address, value); // 紀錄數據
+            var row = "<tr><td>" + address + "</td><td>" + value + "</td></tr>";
+            $("#modbusData").html(row);
+        };
+
+        $.connection.hub.start().done(function () {
+            console.log("SignalR 連線成功！");
+        }).fail(function () {
+            console.log("SignalR 連線失敗！");
+        });
+</script>
